@@ -38,3 +38,33 @@ func (e *baseError) Error() string {
 
 	return msg
 }
+
+// Wrap adds `err` to the `details` field of the new `jerr.BaseError`.
+func Wrap(err error, message string) error {
+	if err == nil {
+		return New(message)
+	}
+
+	if message == "" {
+		switch v := err.(type) {
+		case *baseError:
+			return v
+		default:
+			return New(v.Error())
+		}
+	}
+
+	var details string
+
+	switch d := err.(type) {
+	case *baseError:
+		details = d.Error()
+	default:
+		details = escapeJSON(d.Error())
+	}
+
+	return &baseError{
+		Message: escapeJSON(message),
+		Details: details,
+	}
+}
