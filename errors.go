@@ -1,6 +1,7 @@
 package json_errors
 
-// BaseError interface reveals additional information about the error.
+// BaseError interface reveals
+// additional information about the error.
 // Implements a built-in error interface.
 type BaseError interface {
 	Error() string
@@ -39,7 +40,8 @@ func (e *baseError) Error() string {
 	return msg
 }
 
-// Wrap adds `err` to the `details` field of the new `jerr.BaseError`.
+// Wrap adds `err` to the `details` field of
+// the new `jerr.BaseError`.
 func Wrap(err error, message string) error {
 	if err == nil {
 		return New(message)
