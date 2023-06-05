@@ -5,3 +5,9 @@ package json_errors
 type BaseError interface {
 	Error() string
 }
+
+// baseError is a simple error struct.
+type baseError struct {
+	Message string `json:"message,omitempty"`
+	Details string `json:"details,omitempty"`
+}
