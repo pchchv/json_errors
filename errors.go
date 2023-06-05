@@ -11,3 +11,23 @@ type baseError struct {
 	Message string `json:"message,omitempty"`
 	Details string `json:"details,omitempty"`
 }
+
+func (e *baseError) Error() string {
+	msg := "{"
+
+	if e.Message != "" {
+		msg += `"message":"` + e.Message + `"`
+	}
+
+	if e.Details != "" {
+		if e.Details[0] == '{' {
+			msg += `,"details":` + e.Details
+		} else {
+			msg += `,"details":"` + e.Details + `"`
+		}
+	}
+
+	msg += "}"
+
+	return msg
+}
