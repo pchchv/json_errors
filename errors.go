@@ -12,6 +12,13 @@ type baseError struct {
 	Details string `json:"details,omitempty"`
 }
 
+// New returns a new `jerr.BaseError` with given values.
+func New(message string) error {
+	return &baseError{
+		Message: escapeJSON(message),
+	}
+}
+
 func (e *baseError) Error() string {
 	msg := "{"
 
