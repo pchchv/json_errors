@@ -80,3 +80,56 @@ Line`, wrapped: errors.New("abc")},
 		})
 	}
 }
+
+func TestNew(t *testing.T) {
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{`empty`,
+			args{message: ""},
+			"{}",
+		},
+		{`simple`,
+			args{message: "Hello World"},
+			`{"message":"Hello World"}`,
+		},
+		{`i18n`,
+			args{message: "ı ğ ü ş i ö ç ä I Ğ Ü Ş İ Ö Ç â ê Ä η ή ί ώ w Ω Ә"},
+			`{"message":"ı ğ ü ş i ö ç ä I Ğ Ü Ş İ Ö Ç â ê Ä η ή ί ώ w Ω Ә"}`,
+		},
+		{`html`,
+			args{message: `<p class='title'>Paragraph<hr /></p>`},
+			`{"message":"<p class='title'>Paragraph<hr /></p>"}`,
+		},
+		{`html with double quote`,
+			args{message: `<div class="title"></div>`},
+			`{"message":"<div class=\"title\"></div>"}`,
+		},
+		{`newline`,
+			// DO NOT remove the new line in this string literal
+			args{message: `New
+Line`},
+			`{"message":"New\nLine"}`,
+		},
+		{`newline with \n`,
+			args{message: `New\nLine`},
+			`{"message":"New\nLine"}`,
+		},
+		{`tab`,
+			args{message: `json	error`},
+			`{"message":"json\terror"}`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := json_errors.New(tt.args.message).Error()
+
+			if got != tt.want {
+				t.Error("Got:", got, "Want:", tt.want)
+			}
+		})
+	}
+}
